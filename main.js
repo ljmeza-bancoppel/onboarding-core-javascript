@@ -1,4 +1,4 @@
-import { startOnboardingSession } from './session'
+import { startOnboardingSession, finishOnboardingSession } from './session'
 
 let incode;
 let incodeSession;
@@ -7,6 +7,12 @@ const container = document.getElementById("camera-container");
 function showError(e=null) {
   container.innerHTML = "<h1>There was an error</h1>";
   console.log(e.message)
+}
+
+function saveDeviceData() {
+  incode.sendGeolocation({ token: incodeSession.token });
+  incode.sendFingerprint({ token: incodeSession.token });
+  captureIdFrontSide();
 }
 
 function captureIdFrontSide() {
@@ -47,17 +53,12 @@ function captureSelfie() {
   });
 }
 
-function saveDeviceData() {
-    incode.sendGeolocation({ token: incodeSession.token });
-    incode.sendFingerprint({ token: incodeSession.token });
-    captureIdFrontSide();
-}
+
 
 function finishOnboarding() {
   // Finishing the session works along with the configuration in the flow
   // webhooks and business rules are ran here.
-  incode
-    .getFinishStatus(null, { token: incodeSession.token })
+  finishOnboardingSession(incodeSession.token)
     .then((response) => {
         console.log(response);
         const container = document.getElementById("finish-container");
