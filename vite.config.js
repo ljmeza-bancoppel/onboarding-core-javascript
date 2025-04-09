@@ -12,6 +12,7 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       https: true,
+      cors: true,
     },
     plugins: [mkcert()],
     base: '/onboarding-core-javascript/',
