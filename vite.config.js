@@ -5,5 +5,7 @@ export default defineConfig({
   server: {
     https: true
   },
-  plugins: [ mkcert() ]
+  plugins: [mkcert()],
+  base: '/incode-face-login/',
+  envDir: 'environment',
 });

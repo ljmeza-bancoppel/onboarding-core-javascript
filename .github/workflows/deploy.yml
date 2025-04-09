@@ -1,0 +1,64 @@
+name: Deploy
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install dependencies
+        uses: bahmutov/npm-install@v1
+
+      - name: Save environment variables
+        # Save the variables into the .env.production file
+        run:
+          echo "VITE_TOKEN_SERVER_URL=/api" >> environment/.env.production &&
+          echo "VITE_API_URL=https://demo-api.incodesmile.com" >> environment/.env.production &&
+          echo "VITE_SDK_URL=https://sdk.incode.com/sdk/onBoarding-1.73.1.js" >> environment/.env.production &&s
+          echo "VITE_FAKE_BACKEND_APIURL=https://demo-api.incodesmile.com" >> environment/.env.production
+          echo "VITE_FAKE_BACKEND_APIKEY=NTJiMTQwYWQ0NjllODlhODg5NWQyNzg3OTYzMWU1MzcwOGQ2Y2Y3Zg==" >> environment/.env.production
+          echo "VITE_FAKE_BACKEND_FLOWID=67b60c0e7af70586d6f7f998" >> environment/.env.production
+      - name: Test environment variables
+        # Test if the variables were being stored
+        run:
+          cat environment/.env.production
+
+      - name: Build project
+        run: npm run build
+
+      - name: Upload production-ready build files
+        uses: actions/upload-artifact@v3
+        with:
+          name: production-files
+          path: ./dist
+
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: production-files
+          path: ./dist
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
