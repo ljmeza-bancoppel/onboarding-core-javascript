@@ -26,9 +26,9 @@ jobs:
         run:
           echo "VITE_TOKEN_SERVER_URL=/api" >> environment/.env.production &&
           echo "VITE_API_URL=https://demo-api.incodesmile.com" >> environment/.env.production &&
-          echo "VITE_SDK_URL=https://sdk.incode.com/sdk/onBoarding-1.73.1.js" >> environment/.env.production &&s
-          echo "VITE_FAKE_BACKEND_APIURL=https://demo-api.incodesmile.com" >> environment/.env.production
-          echo "VITE_FAKE_BACKEND_APIKEY=NTJiMTQwYWQ0NjllODlhODg5NWQyNzg3OTYzMWU1MzcwOGQ2Y2Y3Zg==" >> environment/.env.production
+          echo "VITE_SDK_URL=https://sdk.incode.com/sdk/onBoarding-1.73.1.js" >> environment/.env.production &&
+          echo "VITE_FAKE_BACKEND_APIURL=https://demo-api.incodesmile.com" >> environment/.env.production &&
+          echo "VITE_FAKE_BACKEND_APIKEY=NTJiMTQwYWQ0NjllODlhODg5NWQyNzg3OTYzMWU1MzcwOGQ2Y2Y3Zg==" >> environment/.env.production &&
           echo "VITE_FAKE_BACKEND_FLOWID=67b60c0e7af70586d6f7f998" >> environment/.env.production
       - name: Test environment variables
         # Test if the variables were being stored
