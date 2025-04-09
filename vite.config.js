@@ -14,7 +14,7 @@ export default defineConfig(({ mode }) => {
       https: true,
     },
     plugins: [mkcert()],
-    base: '/incode-face-login/',
+    base: '/onboarding-core-javascript/',
     envDir: 'environment',
   }
 })
