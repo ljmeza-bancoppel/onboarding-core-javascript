@@ -2,13 +2,13 @@ import { fakeBackendStart, fakeBackendFinish } from './fake_backend'
 
 let incode;
 let incodeSession;
-let showTutorialsFlag=true;
+let showTutorialsFlag = true;
 const cameraContainer = document.getElementById("camera-container");
 
-function showError(e=null) {
+function showError(e = null) {
   const finishContainer = document.getElementById("finish-container");
   if (e?.message) {
-    finishContainer.innerHTML = `<h1>Error: ${e.message}</h1>`;  
+    finishContainer.innerHTML = `<h1>Error: ${e.message}</h1>`;
   } else {
     finishContainer.innerHTML = "<h1>There was an error</h1>";
     console.log(e);
@@ -16,9 +16,19 @@ function showError(e=null) {
 }
 
 function saveDeviceData() {
-  incode.sendGeolocation({ token: incodeSession.token });
+  // incode.sendGeolocation({ token: incodeSession.token });
   incode.sendFingerprint({ token: incodeSession.token });
-  captureIdFrontSide();
+  capturePoA();
+}
+
+function captureDocuments() {
+  incode.renderDocumentSelector(cameraContainer, {
+    onSuccess: capturePoA,
+    onError: showError,
+    token: incodeSession,
+    numberOfTries: 3,
+    showTutorial: showTutorialsFlag
+  });
 }
 
 function captureIdFrontSide() {
@@ -41,7 +51,7 @@ function captureIdBackSide(response) {
   });
 }
 
-async function  processId() {
+async function processId() {
   const results = await incode.processId({
     token: incodeSession.token,
   });
@@ -59,27 +69,41 @@ function captureSelfie() {
   });
 }
 
+function capturePoA() {
+  incode.renderCamera("document", cameraContainer, {
+    onSuccess: finishOnboarding,
+    onError: showError,
+    token: incodeSession,
+    nativeCamera: false,
+    disableFullScreen: false,
+    fullScreen: true,
+    showPreview: false,
+    numberOfTries: 3,
+    showTutorial: showTutorialsFlag
+  });
+}
+
 function finishOnboarding() {
   // Finishing the session works along with the configuration in the flow
   // webhooks and business rules are ran here.
   fakeBackendFinish(incodeSession.token)
-  .then((response) => {
-    console.log(response);
-    const container = document.getElementById("finish-container");
-    container.innerHTML = "<h1>Onboarding Finished.</h1>";
-  })
-  .catch((e) => {
-    showError(e);
-  });  
+    .then((response) => {
+      console.log(response);
+      const container = document.getElementById("finish-container");
+      container.innerHTML = "<h1>Onboarding Finished.</h1>";
+    })
+    .catch((e) => {
+      showError(e);
+    });
 }
 
 async function app() {
-  try { 
+  try {
     const apiURL = import.meta.env.VITE_API_URL;
     incode = window.OnBoarding.create({
       apiURL: apiURL
     });
-    
+
     // Create the single session
     cameraContainer.innerHTML = "<h1>Creating session...</h1>";
     incodeSession = await fakeBackendStart();
