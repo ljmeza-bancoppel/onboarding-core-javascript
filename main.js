@@ -101,7 +101,8 @@ async function app() {
   try {
     const apiURL = import.meta.env.VITE_API_URL;
     incode = window.OnBoarding.create({
-      apiURL: apiURL
+      apiURL: apiURL,
+      apiKey: atob(import.meta.env.VITE_API_KEY),
     });
 
     // Create the single session
@@ -109,6 +110,7 @@ async function app() {
     incodeSession = await fakeBackendStart();
     // Empty the container and start the flow
     cameraContainer.innerHTML = "";
+    console.log("incodeSession:", incodeSession);
     saveDeviceData();
   } catch (e) {
     showError(e);
