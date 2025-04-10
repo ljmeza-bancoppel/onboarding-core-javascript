@@ -98,11 +98,12 @@ function finishOnboarding() {
 }
 
 async function app() {
+  console.log("Starting app", import.meta.env);
   try {
     const apiURL = import.meta.env.VITE_API_URL;
     incode = window.OnBoarding.create({
       apiURL: apiURL,
-      apiKey: atob(import.meta.env.VITE_API_KEY),
+      apiKey: import.meta.env.VITE_API_KEY,
     });
 
     // Create the single session
