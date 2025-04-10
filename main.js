@@ -102,7 +102,7 @@ async function app() {
   console.log("VITE_API_KEY", import.meta.env.VITE_API_KEY);
   try {
     const apiURL = import.meta.env.VITE_API_URL;
-    const apiKey = import.meta.env.VITE_API_KEY;
+    const apiKey = import.meta.env.VITE_FAKE_BACKEND_APIURL;
     incode = window.OnBoarding.create({
       apiURL: apiURL,
       apiKey: apiKey,
